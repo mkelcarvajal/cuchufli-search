@@ -259,10 +259,46 @@ async function writeFile(fileName, fileContent) {
 }
 
 
+async function getBuyTRX(req, res) {
+    const apiKey = req.headers.apikey
+    const apiSecret = req.headers.secretkey
+    const client = new Spot(apiKey, apiSecret)
+    let sellArrayAux = [];
+    let elementFind = {};
+    console.log("hola");
+    for (let i = 1; i < Number(req.body.pages); i++) {
+        const sells = await client.c2cTradeHistory("BUY", {
+            startTimestamp: dayjs(req.body.date).valueOf(),
+            endTimestamp: dayjs(`${req.body.date}T23:59:59-04:00`).valueOf(),
+            page: i,
+            rows: 100
+        })
+
+        if (sells.data.data.length === 0) {
+            break;
+        }
+
+        console.log(sells.data.data);
+        elementFind = sells.data.data.find(element => element.orderNumber === req.body.orderNumber)
+        if (elementFind) {
+            console.log("element find is:");
+            console.log(elementFind)
+            elementFind.amount = parseFloat(elementFind.amount).toFixed(2);
+            elementFind.totalPrice = elementFind.totalPrice.split(".")[0];
+            break;
+        }
+    }
+
+    res.status(200).send(elementFind);
+
+}
+
+
 module.exports = {
     saveCsvCompra,
     saveCsvVentas,
     compareBuyTRX,
     compareSellTRX,
     compareDuplicateTRX,
+    getBuyTRX
 }

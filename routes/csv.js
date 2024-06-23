@@ -1,7 +1,7 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
 const { fieldValidator } = require("../middlewares/field-validate");
-const { saveCsvCompra, compareBuyTRX, saveCsvVentas, compareSellTRX, compareDuplicateTRX } = require("../controllers/csv");
+const { saveCsvCompra, compareBuyTRX, saveCsvVentas, compareSellTRX, compareDuplicateTRX, getBuyTRX } = require("../controllers/csv");
 const { roleExist, emailExist, userExist } = require("../helpers/db-validator");
 const { validateJWT } = require("../middlewares/validate-jwt");
 const { isAdminRole, haveRole } = require("../middlewares/validate-roles");
@@ -90,6 +90,18 @@ router.post('/compareDuplicateTRX', [
     // check('email').custom(email => emailExist(email)),
     fieldValidator
 ], compareDuplicateTRX);
+
+router.post('/getBuyTRX', [
+    // validateJWT,
+    // isAdminRole,
+    // check('name', 'The name is required').not().isEmpty(),
+    // check('email', 'This email is not valid').isEmail(),
+    // check('password', 'The password must be higher to 6 character').isLength({min: 6}),
+    // // check('role', 'This value is not role allowed').isIn(['ADMIN_ROLE', 'USER_ROLE']),
+    // check('role').custom(role => roleExist(role)),
+    // check('email').custom(email => emailExist(email)),
+    fieldValidator
+], getBuyTRX);
 
 // router.delete('/:id', [
 //     validateJWT,
